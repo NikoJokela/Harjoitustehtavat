@@ -1,4 +1,3 @@
-# Harjoitustehtavat
 
 ohjelmalista = {}
 
@@ -9,7 +8,6 @@ def tallenna_elokuva(ohjelmalista:dict, elokuva:str, kellonaika:str, sali:int):
     return esitys
     
     
-
 def onko_elokuva(ohjelmalista:dict, elokuva:str) -> bool:
     if elokuva in ohjelmalista:
         return True
@@ -59,6 +57,7 @@ if valinta == 1:
     print("1: Lisää elokuva ohjelmistoon")
     print("2: Poista elokuva ohjelmistosta")
     print("3: Listaa ohjelmisto")
+    print("4: Selaa varauksia")
     print("0: Poistu")
     print("----------------------------------------")
     valinta = int(input("Valinta: "))
@@ -78,9 +77,13 @@ if valinta == 1:
             print(f"Elokuva {elokuva} kello {kellonaika} poistettu")
         
         elif valinta == 3:
-            
+
             print("Ohjelmalista: ")
             print(ohjelmalista)
+        
+        elif valinta == 4:
+            pass
+            
             
 
         print("----------------------------------------")
@@ -93,13 +96,22 @@ if valinta == 1:
         print("----------------------------------------")
         valinta = int(input("Valinta: "))    
 
-if valinta == 2:
+elif valinta == 2:
     print("----------------------------------------")
     print("Elokuvateatterin varausjärjestelmä")
     print("Valitse:")
-    print("1: Lisää elokuva ohjelmistoon")
-    print("2: Poista elokuva ohjelmistosta")
-    print("3: Listaa ohjelmisto")
+    print("1: Listaa ohjelmisto")
+    print("2: Varaa paikka")
+    
     print("0: Poistu")
     print("----------------------------------------")
     valinta = int(input("Valinta: "))
+
+    #if valinta == 2:
+       # elokuva = input("Anna elokuvan nimi: ")
+       # if onko_elokuva(ohjelmalista, elokuva):
+
+
+       # else:
+         #   print("Elokuvaa ei ole ohjelmistossa")
+
