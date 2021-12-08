@@ -8,44 +8,46 @@ sali_3 = [x for x in range(1,33)]
 varaus_3 = []
 
 def tallenna_elokuva(ohjelmalista:dict, elokuva:str, kellonaika:str, sali:int):
+
+ohjelmalista = {}
+sali_1 = [x for x in range(1,19)]
+varaus_1 = []
+sali_2 = [x for x in range(1,41)]
+varaus_2 = []
+sali_3 = [x for x in range(1,33)]
+varaus_3 = []
+
+def tallenna_elokuva(ohjelmalista:dict, elokuva:str, kellonaika:str, sali:int):
     ohjelmalista[elokuva] = (kellonaika, sali)
-    esitys = (elokuva, kellonaika, sali) #turhaa
-    return esitys #turhaa
-      
+    
 def onko_elokuva(ohjelmalista:dict, elokuva:str) -> bool:
     if elokuva in ohjelmalista:
         return True
     else:
         return False
-
-def onko_elokuva_kellonaika(ohjelmalista:dict, elokuva:str, kellonaika:str) -> bool: #tarkastaa onko tietty elokuva tiettyyn aikaan ohjelmistossa
-    if (elokuva and kellonaika) in ohjelmalista:
-        return True
-    else:
-        return False       
-        
+      
 def poista_elokuva(ohjelmalista:dict, elokuva:str, kellonaika:str) -> bool: 
     del ohjelmalista[elokuva]
     return True
-    
 
-def salin_elokuvat(ohjelmalista:dict, sali:int) -> list: #Listataan halutun salin elokuvat
-    elokuvalista = []
-    arvot = list(ohjelmalista.values())
-    for i in arvot:
-        if sali in i:
-            elokuvalista.append(i)
-    return elokuvalista
+def tulosta_ohjelmalista():
+    if len(ohjelmalista) > 0:
+        avain = list(ohjelmalista.keys())
+        arvot = list(ohjelmalista.values())
+        print("Ohjelmalista: ")
+        for i in range(len(avain)):
+            print(f"{avain[i]}, Kello: {arvot[i][0]}, Sali: {arvot[i][1]} ")
 
 def varaus_tietokantaan(elokuva:str, sali:int, paikka:int):
     with open("tietokanta.txt","a") as tk:
-        tk.write(f"Varattu liput elokuvaan {elokuva} salissa {sali} istumapaikalta {paikka}")
+        tk.write(f"Varattu liput elokuvaan {elokuva} salissa {sali} istumapaikalta {paikka}" "\n")
 
 print("Tervetuloa elokuvateatterin varausjärjestelmään.\nValitse käyttötarkoitus.")
 print("1: Ylläpitäjä")
 print("2: Asiakas")
 print("0: Sulje ohjelma")
 valinta = int(input("Valinta: "))
+
 while valinta != 0:
     if valinta == 1:
         print("----------------------------------------")
@@ -74,12 +76,7 @@ while valinta != 0:
                 print(f"Elokuva {elokuva} kello {kellonaika} poistettu")
             
             elif valinta == 3:
-
-                avain = list(ohjelmalista.keys())
-                arvot = list(ohjelmalista.values())
-                print("Ohjelmalista: ")
-                for i in range(len(avain)):
-                    print(f"{avain[i]}, Kello: {arvot[i][0]}, Sali: {arvot[i][1]} ")
+                tulosta_ohjelmalista()
             
             elif valinta == 4:
                 with open("tietokanta.txt","r") as tk:
@@ -109,14 +106,8 @@ while valinta != 0:
 
         while valinta != 0: #Asiakkaan käyttöliittymä
             if valinta == 1:
-                if len(ohjelmalista) > 0:
-                    avain = list(ohjelmalista.keys())
-                    arvot = list(ohjelmalista.values())
-                    print("Ohjelmalista: ")
-                    for i in range(len(avain)):
-                        print(f"{avain[i]}, Kello: {arvot[i][0]}, Sali: {arvot[i][1]} ")
-                
-                
+                tulosta_ohjelmalista()
+               
             elif valinta == 2:
                 
                 while True:
@@ -128,7 +119,6 @@ while valinta != 0:
                     if not onko_elokuva(ohjelmalista, elokuva):
                         print("Elokuvaa ei ole ohjelmistossa!")
                     
-                
                 sali = int(input("Valitse sali: "))
                         
                 if sali == 1:
@@ -208,4 +198,7 @@ while valinta != 0:
     print("0: Sulje ohjelma")
     valinta = int(input("Valinta: "))
 
+            
+
+        
             
