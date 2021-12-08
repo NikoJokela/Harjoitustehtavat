@@ -1,5 +1,11 @@
 
 ohjelmalista = {}
+sali_1 = [x for x in range(1,19)]
+varaus_1 = []
+sali_2 = [x for x in range(1,41)]
+varaus_2 = []
+sali_3 = [x for x in range(1,33)]
+varaus_3 = []
 
 def tallenna_elokuva(ohjelmalista:dict, elokuva:str, kellonaika:str, sali:int):
     ohjelmalista[elokuva] = (kellonaika, sali)
@@ -19,7 +25,7 @@ def onko_elokuva_kellonaika(ohjelmalista:dict, elokuva:str, kellonaika:str) -> b
     else:
         return False       
         
-def poista_elokuva(ohjelmalista:dict, elokuva:str, kellonaika:str) -> bool:
+def poista_elokuva(ohjelmalista:dict, elokuva:str, kellonaika:str) -> bool: #EI TOIMI
     if onko_elokuva_kellonaika(ohjelmalista, elokuva, kellonaika):
         del ohjelmalista[elokuva]
         return True
@@ -89,7 +95,7 @@ while valinta != 0:
             print("4: Selaa varauksia")
             print("0: Poistu")
             print("----------------------------------------")
-            valinta = int(input("Valinta: "))    
+            valinta = int(input("Valinta: "))   # KORJAA ETTEI CRASHAA JOS VÄÄRÄ INPUT 
 
     elif valinta == 2:
         print("----------------------------------------")
@@ -112,22 +118,18 @@ while valinta != 0:
                 
                 
             elif valinta == 2:
-                sali_1 = [x for x in range(1,19)]
-                varaus_1 = []
-                sali_2 = [x for x in range(1,41)]
-                varaus_2 = []
-                sali_3 = [x for x in range(1,33)]
-                varaus_3 = []
-
-                elokuva = input("Valitse elokuva: ")
-
-                if onko_elokuva(ohjelmalista, elokuva):
-                    print(ohjelmalista[elokuva])
-                    sali = int(input("Valitse sali: "))
-                    
-                else:
-                    print("Elokuvaa ei ole ohjelmistossa!")
                 
+                while True:
+                    elokuva = input("Valitse elokuva, 0: palaa takaisin: ")
+
+                    if not onko_elokuva(ohjelmalista, elokuva):
+                        print("Elokuvaa ei ole ohjelmistossa!")
+
+                    if elokuva == "0":
+                        break
+                
+                sali = int(input("Valitse sali: "))
+                        
                 if sali == 1:
                     print("___________________")
                     print("|13|14|15|16|17|18|")
@@ -187,21 +189,23 @@ while valinta != 0:
                         print("Varattu paikka", paikka)
                         varaus_3.append(paikka)
                 
-                print("----------------------------------------")
-                print("Elokuvateatterin varausjärjestelmä")
-                print("Valitse:")
-                print("1: Listaa ohjelmisto")
-                print("2: Varaa paikka")
-                print("0: Poistu")
-                print("----------------------------------------")
-                valinta = int(input("Valinta: "))
+            print("----------------------------------------")
+            print("Elokuvateatterin varausjärjestelmä")
+            print("Valitse:")
+            print("1: Listaa ohjelmisto")
+            print("2: Varaa paikka")
+            print("0: Poistu")
+            print("----------------------------------------")
+            valinta = int(input("Valinta: "))    
 
-print("Tervetuloa elokuvateatterin varausjärjestelmään.\nValitse käyttötarkoitus.")
-print("1: Ylläpitäjä")
-print("2: Asiakas")
-print("0: Sulje ohjelma")
-valinta = int(input("Valinta: "))
+    print("Tervetuloa elokuvateatterin varausjärjestelmään.\nValitse käyttötarkoitus.")
+    print("1: Ylläpitäjä")
+    print("2: Asiakas")
+    print("0: Sulje ohjelma")
+    valinta = int(input("Valinta: "))
 
             
+
+        
 
         
