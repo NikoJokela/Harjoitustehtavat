@@ -11,8 +11,7 @@ def tallenna_elokuva(ohjelmalista:dict, elokuva:str, kellonaika:str, sali:int):
     ohjelmalista[elokuva] = (kellonaika, sali)
     esitys = (elokuva, kellonaika, sali) #turhaa
     return esitys #turhaa
-    
-    
+      
 def onko_elokuva(ohjelmalista:dict, elokuva:str) -> bool:
     if elokuva in ohjelmalista:
         return True
@@ -38,6 +37,9 @@ def salin_elokuvat(ohjelmalista:dict, sali:int) -> list: #Listataan halutun sali
             elokuvalista.append(i)
     return elokuvalista
 
+def varaus_tietokantaan(elokuva:str, sali:int, paikka:int):
+    with open("tietokanta.txt","a") as tk:
+        tk.write(f"Varattu liput elokuvaan {elokuva} salissa {sali} istumapaikalta {paikka}")
 
 print("Tervetuloa elokuvateatterin varausjärjestelmään.\nValitse käyttötarkoitus.")
 print("1: Ylläpitäjä")
@@ -80,9 +82,9 @@ while valinta != 0:
                     print(f"{avain[i]}, Kello: {arvot[i][0]}, Sali: {arvot[i][1]} ")
             
             elif valinta == 4:
-                pass
-                
-                
+                with open("tietokanta.txt","r") as tk:
+                    sisalto = tk.read()
+                    print(sisalto)
 
             print("----------------------------------------")
             print("Elokuvateatterin varausjärjestelmä")
@@ -126,8 +128,6 @@ while valinta != 0:
                     if not onko_elokuva(ohjelmalista, elokuva):
                         print("Elokuvaa ei ole ohjelmistossa!")
                     
-
-                    
                 
                 sali = int(input("Valitse sali: "))
                         
@@ -138,7 +138,6 @@ while valinta != 0:
                     print("|01|02|03|04|05|06|")
                     print("|_____Screen______|")
                     print("Varatut paikat: ", varaus_1)
-
                     paikka = int(input("Valitse istumapaikka (esim 1, 9, 13): "))
                     if paikka > len(sali_1) or paikka < 1:
                         print("Paikkaa ei ole! Katso salin istumapaikat ja yritä uudelleen.")
@@ -149,7 +148,9 @@ while valinta != 0:
                     if paikka in sali_1 and paikka not in varaus_1 and len(varaus_1) < 18:
                         print("Varattu paikka", paikka)
                         varaus_1.append(paikka)
-                    
+                        varaus_tietokantaan(elokuva, sali, paikka)
+
+                                 
                 elif sali == 2:
                     print("_______________________________")
                     print("|31|32|33|34|35|36|37|38|39|40|")
@@ -169,6 +170,7 @@ while valinta != 0:
                     if paikka in sali_2 and paikka not in varaus_2 and len(varaus_2) < 40:
                         print("Varattu paikka", paikka)
                         varaus_2.append(paikka)
+                        varaus_tietokantaan(elokuva, sali, paikka)
 
                 elif sali == 3:
                     print("_________________________")
@@ -189,6 +191,7 @@ while valinta != 0:
                     if paikka in sali_3 and paikka not in varaus_3 and len(varaus_3) < 32:
                         print("Varattu paikka", paikka)
                         varaus_3.append(paikka)
+                        varaus_tietokantaan(elokuva, sali, paikka)
                 
             print("----------------------------------------")
             print("Elokuvateatterin varausjärjestelmä")
@@ -206,10 +209,3 @@ while valinta != 0:
     valinta = int(input("Valinta: "))
 
             
-
-        
-
-
-        
-
-        
