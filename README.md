@@ -25,12 +25,10 @@ def onko_elokuva_kellonaika(ohjelmalista:dict, elokuva:str, kellonaika:str) -> b
     else:
         return False       
         
-def poista_elokuva(ohjelmalista:dict, elokuva:str, kellonaika:str) -> bool: #EI TOIMI
-    if onko_elokuva_kellonaika(ohjelmalista, elokuva, kellonaika):
-        del ohjelmalista[elokuva]
-        return True
-    else:
-        return False
+def poista_elokuva(ohjelmalista:dict, elokuva:str, kellonaika:str) -> bool: 
+    del ohjelmalista[elokuva]
+    return True
+    
 
 def salin_elokuvat(ohjelmalista:dict, sali:int) -> list: #Listataan halutun salin elokuvat
     elokuvalista = []
@@ -121,12 +119,15 @@ while valinta != 0:
                 
                 while True:
                     elokuva = input("Valitse elokuva, 0: palaa takaisin: ")
-
-                    if not onko_elokuva(ohjelmalista, elokuva):
-                        print("Elokuvaa ei ole ohjelmistossa!")
-
+                    if onko_elokuva(ohjelmalista, elokuva):
+                        break
                     if elokuva == "0":
                         break
+                    if not onko_elokuva(ohjelmalista, elokuva):
+                        print("Elokuvaa ei ole ohjelmistossa!")
+                    
+
+                    
                 
                 sali = int(input("Valitse sali: "))
                         
@@ -205,6 +206,9 @@ while valinta != 0:
     valinta = int(input("Valinta: "))
 
             
+
+        
+
 
         
 
