@@ -1,17 +1,6 @@
-
 ohjelmalista = {}
 sali_1 = [x for x in range(1,19)]
-varaus_1 = []
-sali_2 = [x for x in range(1,41)]
-varaus_2 = []
-sali_3 = [x for x in range(1,33)]
-varaus_3 = []
-
-def tallenna_elokuva(ohjelmalista:dict, elokuva:str, kellonaika:str, sali:int):
-
-ohjelmalista = {}
-sali_1 = [x for x in range(1,19)]
-varaus_1 = []
+varaus_1 = []                       #EI TOIMI VARAUKSET
 sali_2 = [x for x in range(1,41)]
 varaus_2 = []
 sali_3 = [x for x in range(1,33)]
@@ -19,6 +8,8 @@ varaus_3 = []
 
 def tallenna_elokuva(ohjelmalista:dict, elokuva:str, kellonaika:str, sali:int):
     ohjelmalista[elokuva] = (kellonaika, sali)
+    with open("ohjelmalista.txt","a") as ol:
+        ol.write(f"Elokuva: {elokuva}, kellonaika: {kellonaika}, sali: {sali}" "\n")
     
 def onko_elokuva(ohjelmalista:dict, elokuva:str) -> bool:
     if elokuva in ohjelmalista:
@@ -26,8 +17,13 @@ def onko_elokuva(ohjelmalista:dict, elokuva:str) -> bool:
     else:
         return False
       
-def poista_elokuva(ohjelmalista:dict, elokuva:str, kellonaika:str) -> bool: 
-    del ohjelmalista[elokuva]
+def poista_elokuva(elokuva:str, kellonaika:str, sali:int) -> bool:      #EI TOIMI
+    #del ohjelmalista[elokuva]
+    with open("ohjelmalista.txt","r") as ol:
+        with open("ohjelmalista2.txt","w") as ol2:
+            for rivi in ol:
+                if rivi.strip("\n") != f"Elokuva: {elokuva}, kellonaika: {kellonaika}, sali: {sali}":
+                    ol2.write(rivi)
     return True
 
 def tulosta_ohjelmalista():
@@ -37,6 +33,9 @@ def tulosta_ohjelmalista():
         print("Ohjelmalista: ")
         for i in range(len(avain)):
             print(f"{avain[i]}, Kello: {arvot[i][0]}, Sali: {arvot[i][1]} ")
+    with open("ohjelmalista2.txt","r") as ol2:
+        sisalto = ol2.read()
+        print(sisalto)
 
 def varaus_tietokantaan(elokuva:str, sali:int, paikka:int):
     with open("tietokanta.txt","a") as tk:
@@ -46,43 +45,19 @@ print("Tervetuloa elokuvateatterin varausjärjestelmään.\nValitse käyttötark
 print("1: Ylläpitäjä")
 print("2: Asiakas")
 print("0: Sulje ohjelma")
-valinta = int(input("Valinta: "))
+while True:
+    try:
+        valinta = int(input("Valinta: "))
+        if valinta == 0 or 1 or 2:
+            break
+    except ValueError:
+        print("Syöte pitää olla luku, ei kirjain! Vain 1, 2 tai 0!")
 
 while valinta != 0:
     if valinta == 1:
-        print("----------------------------------------")
-        print("Elokuvateatterin varausjärjestelmä")
-        print("Valitse:")
-        print("1: Lisää elokuva ohjelmistoon")
-        print("2: Poista elokuva ohjelmistosta")
-        print("3: Listaa ohjelmisto")
-        print("4: Selaa varauksia")
-        print("0: Poistu")
-        print("----------------------------------------")
-        valinta = int(input("Valinta: "))
-
-        while valinta != 0:     #Ylläpitäjän käyttöliittymä
-
-            if valinta == 1:
-                elokuva = input("Elokuvan nimi: ")
-                kellonaika = input("Lisää kellonaika: ")
-                sali = input("Salin numero: ")
-                tallenna_elokuva(ohjelmalista, elokuva, kellonaika, sali)
+        salasana = input("Anna salasana: ")
+        if salasana == "salasana":
             
-            elif valinta == 2:
-                elokuva = input("Anna elokuvan nimi: ")
-                kellonaika = input("Anna kellonaika: ")
-                poista_elokuva(ohjelmalista, elokuva, kellonaika)
-                print(f"Elokuva {elokuva} kello {kellonaika} poistettu")
-            
-            elif valinta == 3:
-                tulosta_ohjelmalista()
-            
-            elif valinta == 4:
-                with open("tietokanta.txt","r") as tk:
-                    sisalto = tk.read()
-                    print(sisalto)
-
             print("----------------------------------------")
             print("Elokuvateatterin varausjärjestelmä")
             print("Valitse:")
@@ -92,7 +67,56 @@ while valinta != 0:
             print("4: Selaa varauksia")
             print("0: Poistu")
             print("----------------------------------------")
-            valinta = int(input("Valinta: "))   # KORJAA ETTEI CRASHAA JOS VÄÄRÄ INPUT 
+            while True:
+                try:
+                    valinta = int(input("Valinta: "))
+                    if valinta == 0 or 1 or 2 or 3 or 4:
+                        break
+                except ValueError:
+                    print("Syöte pitää olla luku, ei kirjain! Vain 0, 1, 2, 3 tai 4")
+
+            while valinta != 0:     #Ylläpitäjän käyttöliittymä
+
+                if valinta == 1:
+                    elokuva = input("Elokuvan nimi: ")
+                    kellonaika = input("Lisää kellonaika: ")
+                    sali = input("Salin numero: ")
+                    tallenna_elokuva(ohjelmalista, elokuva, kellonaika, sali)
+                
+                elif valinta == 2:
+                    elokuva = input("Anna elokuvan nimi: ")
+                    kellonaika = input("Anna kellonaika: ")
+                    sali = input("Anna salin numero: ")
+                    poista_elokuva(ohjelmalista, elokuva, kellonaika)
+                    print(f"Elokuva {elokuva} kello {kellonaika} poistettu")
+                
+                elif valinta == 3:
+                    tulosta_ohjelmalista()
+                
+                elif valinta == 4:
+                    with open("tietokanta.txt","r") as tk:
+                        sisalto = tk.read()
+                        print(sisalto)
+
+                print("----------------------------------------")
+                print("Elokuvateatterin varausjärjestelmä")
+                print("Valitse:")
+                print("1: Lisää elokuva ohjelmistoon")
+                print("2: Poista elokuva ohjelmistosta")
+                print("3: Listaa ohjelmisto")
+                print("4: Selaa varauksia")
+                print("0: Poistu")
+                print("----------------------------------------")
+                
+                while True:
+                    try:
+                        valinta = int(input("Valinta: "))
+                        if valinta == 0 or 1 or 2 or 3 or 4:
+                            break
+                    except ValueError:
+                        print("Syöte pitää olla luku, ei kirjain! Vain 0, 1, 2, 3 tai 4.")
+        else: 
+            print("Väärä salasana!")     
 
     elif valinta == 2:
         print("----------------------------------------")
@@ -102,7 +126,13 @@ while valinta != 0:
         print("2: Varaa paikka")
         print("0: Poistu")
         print("----------------------------------------")
-        valinta = int(input("Valinta: "))
+        while True:
+            try:
+                valinta = int(input("Valinta: "))
+                if valinta == 0 or 1 or 2:
+                    break
+            except ValueError:
+                print("Syöte pitää olla luku, ei kirjain! Vain 1, 2 tai 0.")
 
         while valinta != 0: #Asiakkaan käyttöliittymä
             if valinta == 1:
@@ -118,9 +148,15 @@ while valinta != 0:
                         break
                     if not onko_elokuva(ohjelmalista, elokuva):
                         print("Elokuvaa ei ole ohjelmistossa!")
-                    
-                sali = int(input("Valitse sali: "))
-                        
+
+                while True:
+                    try:
+                        sali = int(input("Valitse sali: "))
+                        if sali == 1 or 2 or 3:
+                            break
+                    except ValueError:
+                        print("Salin numero pitää olla 1, 2 tai 3.")
+ 
                 if sali == 1:
                     print("___________________")
                     print("|13|14|15|16|17|18|")
@@ -128,7 +164,15 @@ while valinta != 0:
                     print("|01|02|03|04|05|06|")
                     print("|_____Screen______|")
                     print("Varatut paikat: ", varaus_1)
-                    paikka = int(input("Valitse istumapaikka (esim 1, 9, 13): "))
+
+                    while True:
+                        try:
+                            paikka = int(input("Valitse istumapaikka (esim 1, 9, 13): "))
+                            if type(paikka) == int:
+                                break
+                        except ValueError:
+                            print("Paikka pitää antaa numerona!")
+
                     if paikka > len(sali_1) or paikka < 1:
                         print("Paikkaa ei ole! Katso salin istumapaikat ja yritä uudelleen.")
                     if paikka in varaus_1:
@@ -150,7 +194,14 @@ while valinta != 0:
                     print("|___________Screen____________|")
                     print("Varatut paikat: ", varaus_2)
 
-                    paikka = int(input("Valitse istumapaikka (esim 1, 9, 13): "))
+                    while True:
+                        try:
+                            paikka = int(input("Valitse istumapaikka (esim 1, 9, 13): "))
+                            if type(paikka) == int:
+                                break
+                        except ValueError:
+                            print("Paikka pitää antaa numerona!")
+
                     if paikka > len(sali_2) or paikka < 1:
                         print("Paikkaa ei ole! Katso salin istumapaikat ja yritä uudelleen.")
                     if paikka in varaus_2:
@@ -171,7 +222,14 @@ while valinta != 0:
                     print("|________Screen_________|")
                     print("Varatut paikat: ", varaus_2)
 
-                    paikka = int(input("Valitse istumapaikka (esim 1, 9, 13): "))
+                    while True:
+                        try:
+                            paikka = int(input("Valitse istumapaikka (esim 1, 9, 13): "))
+                            if type(paikka) == int:
+                                break
+                        except ValueError:
+                            print("Paikka pitää antaa numerona!")
+
                     if paikka > len(sali_3) or paikka < 1:
                         print("Paikkaa ei ole! Katso salin istumapaikat ja yritä uudelleen.")
                     if paikka in varaus_3:
@@ -190,15 +248,25 @@ while valinta != 0:
             print("2: Varaa paikka")
             print("0: Poistu")
             print("----------------------------------------")
-            valinta = int(input("Valinta: "))    
+            while True:
+                try:
+                    valinta = int(input("Valinta: "))
+                    if valinta == 0 or 1 or 2:
+                        break
+                except ValueError:
+                    print("Syöte pitää olla luku, ei kirjain! Vain 1, 2 tai 0!") 
 
     print("Tervetuloa elokuvateatterin varausjärjestelmään.\nValitse käyttötarkoitus.")
     print("1: Ylläpitäjä")
     print("2: Asiakas")
     print("0: Sulje ohjelma")
-    valinta = int(input("Valinta: "))
-
-            
+    while True:
+        try:
+            valinta = int(input("Valinta: "))
+            if valinta == 0 or 1 or 2:
+                break
+        except ValueError:
+            print("Syöte pitää olla luku, ei kirjain! Vain 1, 2 tai 0!")
 
         
             
