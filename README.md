@@ -1,4 +1,3 @@
-
 ohjelmalista = {}
 sali_1 = [x for x in range(1,19)]
 varaus_1 = []                       #EI TOIMI VARAUKSET
@@ -20,15 +19,14 @@ def onko_elokuva(ohjelmalista:dict, elokuva:str) -> bool:
       
 def poista_elokuva(elokuva:str, kellonaika:str, sali:int) -> bool: #poistaa tällä hetkellä monta elokuvaa, jos kellonaika on sama!  
     #del ohjelmalista[elokuva]
+    
     with open("ohjelmalista.txt","r") as ol:
         rivit = ol.readlines()
     with open("ohjelmalista.txt","w") as ol:
             for rivi in rivit:
-                if (elokuva and kellonaika and sali) not in rivi:
+                if sali and kellonaika and elokuva not in rivi:
                     ol.write(rivi)
     return True
-    
-
 
 def tulosta_ohjelmalista():
     #if len(ohjelmalista) > 0:
@@ -37,7 +35,7 @@ def tulosta_ohjelmalista():
      #   print("Ohjelmalista: ")
      #   for i in range(len(avain)):
      #       print(f"{avain[i]}, Kello: {arvot[i][0]}, Sali: {arvot[i][1]} ")
-    with open("ohjelmalista.txt","r") as ol:
+    with open("ohjelmalista.txt") as ol:
         sisalto = ol.read()
         print(sisalto)
 
@@ -84,7 +82,7 @@ while valinta != 0:
                 if valinta == 1:
                     elokuva = input("Elokuvan nimi: ")
                     kellonaika = input("Lisää kellonaika: ")
-                    sali = input("Salin numero: ")
+                    sali = int(input("Salin numero: "))
                     tallenna_elokuva(ohjelmalista, elokuva, kellonaika, sali)
                 
                 elif valinta == 2:
@@ -275,4 +273,3 @@ while valinta != 0:
             
 
         
-
