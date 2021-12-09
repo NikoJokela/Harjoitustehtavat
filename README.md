@@ -1,3 +1,4 @@
+
 ohjelmalista = {}
 sali_1 = [x for x in range(1,19)]
 varaus_1 = []                       #EI TOIMI VARAUKSET
@@ -17,24 +18,27 @@ def onko_elokuva(ohjelmalista:dict, elokuva:str) -> bool:
     else:
         return False
       
-def poista_elokuva(elokuva:str, kellonaika:str, sali:int) -> bool:      #EI TOIMI
+def poista_elokuva(elokuva:str, kellonaika:str, sali:int) -> bool: #poistaa tällä hetkellä monta elokuvaa, jos kellonaika on sama!  
     #del ohjelmalista[elokuva]
     with open("ohjelmalista.txt","r") as ol:
-        with open("ohjelmalista2.txt","w") as ol2:
-            for rivi in ol:
-                if rivi.strip("\n") != f"Elokuva: {elokuva}, kellonaika: {kellonaika}, sali: {sali}":
-                    ol2.write(rivi)
+        rivit = ol.readlines()
+    with open("ohjelmalista.txt","w") as ol:
+            for rivi in rivit:
+                if (elokuva and kellonaika and sali) not in rivi:
+                    ol.write(rivi)
     return True
+    
+
 
 def tulosta_ohjelmalista():
-    if len(ohjelmalista) > 0:
-        avain = list(ohjelmalista.keys())
-        arvot = list(ohjelmalista.values())
-        print("Ohjelmalista: ")
-        for i in range(len(avain)):
-            print(f"{avain[i]}, Kello: {arvot[i][0]}, Sali: {arvot[i][1]} ")
-    with open("ohjelmalista2.txt","r") as ol2:
-        sisalto = ol2.read()
+    #if len(ohjelmalista) > 0:
+    #   avain = list(ohjelmalista.keys())
+     #   arvot = list(ohjelmalista.values())
+     #   print("Ohjelmalista: ")
+     #   for i in range(len(avain)):
+     #       print(f"{avain[i]}, Kello: {arvot[i][0]}, Sali: {arvot[i][1]} ")
+    with open("ohjelmalista.txt","r") as ol:
+        sisalto = ol.read()
         print(sisalto)
 
 def varaus_tietokantaan(elokuva:str, sali:int, paikka:int):
@@ -87,8 +91,8 @@ while valinta != 0:
                     elokuva = input("Anna elokuvan nimi: ")
                     kellonaika = input("Anna kellonaika: ")
                     sali = input("Anna salin numero: ")
-                    poista_elokuva(ohjelmalista, elokuva, kellonaika)
-                    print(f"Elokuva {elokuva} kello {kellonaika} poistettu")
+                    poista_elokuva(elokuva, kellonaika, sali)
+                    print(f"Elokuva {elokuva} kello {kellonaika} salista {sali} poistettu.")
                 
                 elif valinta == 3:
                     tulosta_ohjelmalista()
@@ -268,5 +272,7 @@ while valinta != 0:
         except ValueError:
             print("Syöte pitää olla luku, ei kirjain! Vain 1, 2 tai 0!")
 
-        
             
+
+        
+
