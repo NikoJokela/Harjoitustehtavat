@@ -82,7 +82,7 @@ while valinta != 0:
                 if valinta == 1:
                     elokuva = input("Elokuvan nimi: ")
                     kellonaika = input("Lisää kellonaika: ")
-                    sali = int(input("Salin numero: "))
+                    sali = input("Salin numero: ")
                     tallenna_elokuva(ohjelmalista, elokuva, kellonaika, sali)
                 
                 elif valinta == 2:
@@ -271,5 +271,3 @@ while valinta != 0:
             print("Syöte pitää olla luku, ei kirjain! Vain 1, 2 tai 0!")
 
             
-
-        
