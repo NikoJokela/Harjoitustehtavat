@@ -18,7 +18,7 @@ def tallenna_elokuva(ohjelmalista:dict, elokuva:str, kellonaika:str, sali:int):
     ohjelmalista["elokuvat"].append(naytos)
     print(f"Tallennettu elokuva {elokuva}, kellonaikaan {kellonaika}, salissa {sali}")
     with open("elokuvat.json","w") as tiedosto:
-        json.dump(ohjelmalista, tiedosto)
+        json.dump(ohjelmalista, tiedosto, indent=4)
     
 def onko_elokuva(ohjelmalista:dict, elokuva:str):
     with open("elokuvat.json","r") as tiedosto:
@@ -35,13 +35,14 @@ def poista_elokuva(elokuva:str, kellonaika:str, sali:int):
     "sali": sali,
     "varauslista": []
     }
-    with open("elokuvat.json","r") as tiedosto:
+    with open("elokuvat.json","r+") as tiedosto:
         ohjelmalista = json.load(tiedosto)
-        for naytos in ohjelmalista:
-            if elokuva == naytos[0] and kellonaika == naytos[1] and sali == naytos[2]:
-                del naytos
-    with open("elokuvat.json","w") as tiedosto:
-        ohjelmalista = json.dump(ohjelmalista, tiedosto)
+        for i in range(len(ohjelmalista["elokuvat"])):
+            if elokuva == ohjelmalista["elokuvat"][i]["elokuva"]:
+                del ohjelmalista["elokuvat"][i]
+    with open("elokuvat.json","w") as tiedosto:      
+        json.dump(ohjelmalista, tiedosto, indent=4)
+          
     
 
 def tulosta_ohjelmalista():
@@ -68,7 +69,7 @@ def varaukset():
 def valitut_varaukset():
     valittu["varauslista"].append(paikka)
     with open("elokuvat.json","w") as tiedosto:
-        json.dump(ohjelmalista, tiedosto)
+        json.dump(ohjelmalista, tiedosto, indent=4)
         
 
 def tulosta_paavalikko(): #Tulostaa järjestelmän päävalikon
@@ -312,5 +313,7 @@ while valinta != 0:
             print("Syöte pitää olla luku, ei kirjain! Vain 1, 2 tai 0!")
 
             
+
+        
 
         
