@@ -1,34 +1,48 @@
+import json
+ohjelmalista = {"elokuvat": []}
 
-ohjelmalista = {}
 sali_1 = [x for x in range(1,19)]
-varaus_1 = []                       #EI TOIMI VARAUKSET
+                   
 sali_2 = [x for x in range(1,41)]
-varaus_2 = []
+
 sali_3 = [x for x in range(1,33)]
-varaus_3 = []
+
 
 def tallenna_elokuva(ohjelmalista:dict, elokuva:str, kellonaika:str, sali:int):
-    ohjelmalista[elokuva] = (kellonaika, sali)
+    naytos = {
+    "elokuva": elokuva,
+    "kellonaika": kellonaika,
+    "sali": sali,
+    "varauslista": []
+    }
+    ohjelmalista["elokuvat"].append(naytos)
     print(f"Tallennettu elokuva {elokuva}, kellonaikaan {kellonaika}, salissa {sali}")
-    with open("ohjelmalista.txt","a") as ol:
-        ol.write(f"Elokuva: {elokuva}, kellonaika: {kellonaika}, sali: {sali}" "\n")
+    with open("elokuvat.json","w") as tiedosto:
+        json.dump(ohjelmalista, tiedosto)
     
-def onko_elokuva(ohjelmalista:dict, elokuva:str) -> bool:
-    if elokuva in ohjelmalista:
-        return True
-    else:
-        return False
+def onko_elokuva(ohjelmalista:dict, elokuva:str):
+    with open("elokuvat.json","r") as tiedosto:
+        ohjelmalista = json.load(tiedosto)
+        if elokuva in ohjelmalista:
+            return True
+        else:
+            return False
       
-def poista_elokuva(elokuva:str, kellonaika:str, sali:int) -> bool: 
-    #del ohjelmalista[elokuva]
+def poista_elokuva(elokuva:str, kellonaika:str, sali:int):
+    naytos = {
+    "elokuva": elokuva,
+    "kellonaika": kellonaika,
+    "sali": sali,
+    "varauslista": []
+    }
+    with open("elokuvat.json","r") as tiedosto:
+        ohjelmalista = json.load(tiedosto)
+        for naytos in ohjelmalista:
+            if elokuva == naytos[0] and kellonaika == naytos[1] and sali == naytos[2]:
+                del naytos
+    with open("elokuvat.json","w") as tiedosto:
+        ohjelmalista = json.dump(ohjelmalista, tiedosto)
     
-    with open("ohjelmalista.txt","r") as ol:
-        rivit = ol.readlines()
-    with open("ohjelmalista.txt","w") as ol:
-            for rivi in rivit:
-                if kellonaika and sali and elokuva not in rivi: # POISTAA TAAS KAIKKI SAMANNIMISET ELOKUVAT!
-                    ol.write(rivi)
-    return True
 
 def tulosta_ohjelmalista():
     #if len(ohjelmalista) > 0:
@@ -37,13 +51,25 @@ def tulosta_ohjelmalista():
      #   print("Ohjelmalista: ")
      #   for i in range(len(avain)):
      #       print(f"{avain[i]}, Kello: {arvot[i][0]}, Sali: {arvot[i][1]} ")
-    with open("ohjelmalista.txt","r") as ol:
-        sisalto = ol.read()
-        print(sisalto)
+    with open("elokuvat.json","r") as tiedosto:
+        ohjelmalista = json.load(tiedosto)
+        print(ohjelmalista)
 
 def varaus_tietokantaan(elokuva:str, sali:int, paikka:int):
     with open("tietokanta.txt","a") as tk:
         tk.write(f"Varattu liput elokuvaan {elokuva} salissa {sali} istumapaikalta {paikka}" "\n")
+
+def varaukset():
+    with open("elokuvat.json","r") as tiedosto:
+        ohjelmalista = json.load(tiedosto)
+        if valittu in ohjelmalista["elokuvat"]:
+            print("Varatut paikat: ",  (valittu["varauslista"]))
+
+def valitut_varaukset():
+    valittu["varauslista"].append(paikka)
+    with open("elokuvat.json","w") as tiedosto:
+        json.dump(ohjelmalista, tiedosto)
+        
 
 def tulosta_paavalikko(): #Tulostaa järjestelmän päävalikon
     print("Tervetuloa elokuvateatterin varausjärjestelmään.\nValitse käyttötarkoitus.")
@@ -153,14 +179,19 @@ while valinta != 0:
                
             elif valinta == 2:
                 
-                while True:
-                    elokuva = input("Valitse elokuva, 0: palaa takaisin: ")
-                    if onko_elokuva(ohjelmalista, elokuva):
-                        break
-                    if elokuva == "0":
-                        break
-                    if not onko_elokuva(ohjelmalista, elokuva):
-                        print("Elokuvaa ei ole ohjelmistossa!")
+                
+                elokuva = input("Valitse elokuva, 0: palaa takaisin: ")
+                with open("elokuvat.json","r") as tiedosto:
+                    ohjelmalista = json.load(tiedosto)
+                    for naytos in ohjelmalista["elokuvat"]:
+                        if naytos["elokuva"] == elokuva:
+                            valittu = naytos
+                            print(valittu)
+                                    
+        
+                    
+                        
+                    
 
                 while True:
                     try:
@@ -179,7 +210,7 @@ while valinta != 0:
                     print("|07|08|09|10|11|12|")
                     print("|01|02|03|04|05|06|")
                     print("|_____Screen______|")
-                    print("Varatut paikat: ", varaus_1)
+                    varaukset()
 
                     while True:
                         try:
@@ -191,13 +222,15 @@ while valinta != 0:
 
                     if paikka > len(sali_1) or paikka < 1:
                         print("Paikkaa ei ole! Katso salin istumapaikat ja yritä uudelleen.")
-                    if paikka in varaus_1:
+                    elif paikka in valittu["varauslista"]:
                         print("Paikka on jo varattu!")
-                    if len(varaus_1) >= 18:
+                    elif len(valittu["varauslista"]) >= 18:
                         print("Sali on täynnä!")
-                    if paikka in sali_1 and paikka not in varaus_1 and len(varaus_1) < 18:
+                    else:
                         print("Varattu paikka", paikka)
-                        varaus_1.append(paikka)
+                        valittu["varauslista"].append(paikka)
+                        with open("elokuvat.json","w") as tiedosto:
+                            json.dump(ohjelmalista, tiedosto)
                         varaus_tietokantaan(elokuva, sali, paikka)
                
                 elif sali == 2:
@@ -207,7 +240,7 @@ while valinta != 0:
                     print("|11|12|13|14|15|16|17|18|19|20|")
                     print("|01|02|03|04|05|06|07|08|09|10|")
                     print("|___________Screen____________|")
-                    print("Varatut paikat: ", varaus_2)
+                    varaukset()
 
                     while True:
                         try:
@@ -219,13 +252,15 @@ while valinta != 0:
 
                     if paikka > len(sali_2) or paikka < 1:
                         print("Paikkaa ei ole! Katso salin istumapaikat ja yritä uudelleen.")
-                    if paikka in varaus_2:
+                    elif paikka in valittu["varauslista"]:
                         print("Paikka on jo varattu!")
-                    if len(varaus_2) >= 40:
+                    elif len(valittu["varauslista"]) >= 40:
                         print("Sali on täynnä!")
-                    if paikka in sali_2 and paikka not in varaus_2 and len(varaus_2) < 40:
+                    else:
                         print("Varattu paikka", paikka)
-                        varaus_2.append(paikka)
+                        valittu["varauslista"].append(paikka)
+                        with open("elokuvat.json","w") as tiedosto:
+                            json.dump(ohjelmalista, tiedosto)
                         varaus_tietokantaan(elokuva, sali, paikka)
 
                 elif sali == 3:
@@ -235,7 +270,7 @@ while valinta != 0:
                     print("|09|10|11|12|13|14|15|16|")
                     print("|01|02|03|04|05|06|07|08|")
                     print("|________Screen_________|")
-                    print("Varatut paikat: ", varaus_2)
+                    varaukset()
 
                     while True:
                         try:
@@ -247,13 +282,15 @@ while valinta != 0:
 
                     if paikka > len(sali_3) or paikka < 1:
                         print("Paikkaa ei ole! Katso salin istumapaikat ja yritä uudelleen.")
-                    if paikka in varaus_3:
+                    elif paikka in valittu["varauslista"]:
                         print("Paikka on jo varattu!")
-                    if len(varaus_3) >= 32:
+                    elif len(valittu["varauslista"]) >= 32:
                         print("Sali on täynnä!")
-                    if paikka in sali_3 and paikka not in varaus_3 and len(varaus_3) < 32:
+                    else:
                         print("Varattu paikka", paikka)
-                        varaus_3.append(paikka)
+                        valittu["varauslista"].append(paikka)
+                        with open("elokuvat.json","w") as tiedosto:
+                            json.dump(ohjelmalista, tiedosto)
                         varaus_tietokantaan(elokuva, sali, paikka)  
             tulosta_asiakasvalikko()
 
