@@ -29,17 +29,23 @@ def onko_elokuva(ohjelmalista:dict, elokuva:str):
             return False
       
 def poista_elokuva(elokuva:str, kellonaika:str, sali:int):
-    naytos = {
-    "elokuva": elokuva,
-    "kellonaika": kellonaika,
-    "sali": sali,
-    "varauslista": []
-    }
+    # naytos = {
+    # "elokuva": elokuva,
+    # "kellonaika": kellonaika,
+    # "sali": sali,
+    # "varauslista": []
+    # }
+
     with open("elokuvat.json","r+") as tiedosto:
         ohjelmalista = json.load(tiedosto)
-        for i in range(len(ohjelmalista["elokuvat"])):
+        i = 0
+        while i < len(ohjelmalista["elokuvat"]):
             if elokuva == ohjelmalista["elokuvat"][i]["elokuva"]:
                 del ohjelmalista["elokuvat"][i]
+            i += 1
+        #for i in range(len(ohjelmalista["elokuvat"])):
+    #         if elokuva == ohjelmalista["elokuvat"][i]["elokuva"]:
+    #             del ohjelmalista["elokuvat"][i]
     with open("elokuvat.json","w") as tiedosto:      
         json.dump(ohjelmalista, tiedosto, indent=4)
           
@@ -231,7 +237,7 @@ while valinta != 0:
                         print("Varattu paikka", paikka)
                         valittu["varauslista"].append(paikka)
                         with open("elokuvat.json","w") as tiedosto:
-                            json.dump(ohjelmalista, tiedosto)
+                            json.dump(ohjelmalista, tiedosto, indent=4)
                         varaus_tietokantaan(elokuva, sali, paikka)
                
                 elif sali == 2:
@@ -261,7 +267,7 @@ while valinta != 0:
                         print("Varattu paikka", paikka)
                         valittu["varauslista"].append(paikka)
                         with open("elokuvat.json","w") as tiedosto:
-                            json.dump(ohjelmalista, tiedosto)
+                            json.dump(ohjelmalista, tiedosto, indent=4)
                         varaus_tietokantaan(elokuva, sali, paikka)
 
                 elif sali == 3:
@@ -291,7 +297,7 @@ while valinta != 0:
                         print("Varattu paikka", paikka)
                         valittu["varauslista"].append(paikka)
                         with open("elokuvat.json","w") as tiedosto:
-                            json.dump(ohjelmalista, tiedosto)
+                            json.dump(ohjelmalista, tiedosto, indent=4)
                         varaus_tietokantaan(elokuva, sali, paikka)  
             tulosta_asiakasvalikko()
 
@@ -313,7 +319,5 @@ while valinta != 0:
             print("Syöte pitää olla luku, ei kirjain! Vain 1, 2 tai 0!")
 
             
-
-        
 
         
