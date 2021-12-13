@@ -7,7 +7,6 @@ sali_2 = [x for x in range(1,41)]
 
 sali_3 = [x for x in range(1,33)]
 
-
 def tallenna_elokuva(ohjelmalista:dict, elokuva:str, kellonaika:str, sali:int):
     naytos = {
     "elokuva": elokuva,
@@ -20,47 +19,36 @@ def tallenna_elokuva(ohjelmalista:dict, elokuva:str, kellonaika:str, sali:int):
     with open("elokuvat.json","w") as tiedosto:
         json.dump(ohjelmalista, tiedosto, indent=4)
     
-def onko_elokuva(ohjelmalista:dict, elokuva:str):
+def onko_elokuva(elokuva, kellonaika) -> bool:
     with open("elokuvat.json","r") as tiedosto:
         ohjelmalista = json.load(tiedosto)
-        if elokuva in ohjelmalista:
-            return True
-        else:
-            return False
-      
+        i = 0
+        while i < len(ohjelmalista["elokuvat"]):
+            if elokuva == ohjelmalista["elokuvat"][i]["elokuva"] and kellonaika == ohjelmalista["elokuvat"][i]["kellonaika"]:
+                i += 1
+                return True
+            else:
+                i += 1
+                    
 def poista_elokuva(elokuva:str, kellonaika:str, sali:int):
-    # naytos = {
-    # "elokuva": elokuva,
-    # "kellonaika": kellonaika,
-    # "sali": sali,
-    # "varauslista": []
-    # }
-
     with open("elokuvat.json","r+") as tiedosto:
         ohjelmalista = json.load(tiedosto)
         i = 0
         while i < len(ohjelmalista["elokuvat"]):
-            if elokuva == ohjelmalista["elokuvat"][i]["elokuva"]:
+            if elokuva == ohjelmalista["elokuvat"][i]["elokuva"] and kellonaika == ohjelmalista["elokuvat"][i]["kellonaika"] and sali == ohjelmalista["elokuvat"][i]["sali"]:
                 del ohjelmalista["elokuvat"][i]
             i += 1
-        #for i in range(len(ohjelmalista["elokuvat"])):
-    #         if elokuva == ohjelmalista["elokuvat"][i]["elokuva"]:
-    #             del ohjelmalista["elokuvat"][i]
     with open("elokuvat.json","w") as tiedosto:      
         json.dump(ohjelmalista, tiedosto, indent=4)
           
-    
-
 def tulosta_ohjelmalista():
-    #if len(ohjelmalista) > 0:
-    #   avain = list(ohjelmalista.keys())
-     #   arvot = list(ohjelmalista.values())
-     #   print("Ohjelmalista: ")
-     #   for i in range(len(avain)):
-     #       print(f"{avain[i]}, Kello: {arvot[i][0]}, Sali: {arvot[i][1]} ")
     with open("elokuvat.json","r") as tiedosto:
         ohjelmalista = json.load(tiedosto)
-        print(ohjelmalista)
+        if len(ohjelmalista["elokuvat"]) > 0:
+            for naytos in ohjelmalista["elokuvat"]:
+                print(naytos)
+        else:
+            print("Ohjelmalista on tyhjä.")
 
 def varaus_tietokantaan(elokuva:str, sali:int, paikka:int):
     with open("tietokanta.txt","a") as tk:
@@ -70,7 +58,7 @@ def varaukset():
     with open("elokuvat.json","r") as tiedosto:
         ohjelmalista = json.load(tiedosto)
         if valittu in ohjelmalista["elokuvat"]:
-            print("Varatut paikat: ",  (valittu["varauslista"]))
+            print("Varatut paikat: ",  (sorted(valittu["varauslista"])))
 
 def valitut_varaukset():
     valittu["varauslista"].append(paikka)
@@ -145,7 +133,7 @@ while valinta != 0:
                 elif valinta == 2:
                     elokuva = input("Anna elokuvan nimi: ")
                     kellonaika = input("Anna kellonaika: ")
-                    sali = input("Anna salin numero: ")
+                    sali = int(input("Anna salin numero: "))
                     poista_elokuva(elokuva, kellonaika, sali)
                     print(f"Elokuva {elokuva} kello {kellonaika} salista {sali} poistettu.")
                 
@@ -186,20 +174,19 @@ while valinta != 0:
                
             elif valinta == 2:
                 
-                
-                elokuva = input("Valitse elokuva, 0: palaa takaisin: ")
+                while True:
+                    elokuva = input("Valitse elokuva: ")
+                    kellonaika = input("Anna kellonaika: ")
+                    if onko_elokuva(elokuva, kellonaika):
+                        break
+                    else:
+                        print("Näytöstä ei ole tähän aikaan.")
                 with open("elokuvat.json","r") as tiedosto:
                     ohjelmalista = json.load(tiedosto)
                     for naytos in ohjelmalista["elokuvat"]:
-                        if naytos["elokuva"] == elokuva:
+                        if naytos["elokuva"] == elokuva and naytos["kellonaika"] == kellonaika:
                             valittu = naytos
-                            print(valittu)
                                     
-        
-                    
-                        
-                    
-
                 while True:
                     try:
                         sali = int(input("Valitse sali: "))
@@ -319,5 +306,7 @@ while valinta != 0:
             print("Syöte pitää olla luku, ei kirjain! Vain 1, 2 tai 0!")
 
             
+
+        
 
         
