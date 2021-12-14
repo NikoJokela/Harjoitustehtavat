@@ -44,6 +44,7 @@ def poista_elokuva(elokuva:str, kellonaika:str, sali:int):
 def tulosta_ohjelmalista():
     with open("elokuvat.json","r") as tiedosto:
         ohjelmalista = json.load(tiedosto)
+        print("Ohjelmalista:")
         if len(ohjelmalista["elokuvat"]) > 0:
             for naytos in ohjelmalista["elokuvat"]:
                 print(naytos)
@@ -310,3 +311,4 @@ while valinta != 0:
         
 
         
+
