@@ -19,18 +19,18 @@ def tallenna_elokuva(ohjelmalista:dict, elokuva:str, kellonaika:str, sali:int):
     with open("elokuvat.json","w") as tiedosto:
         json.dump(ohjelmalista, tiedosto, indent=4)
     
-def onko_elokuva(elokuva, kellonaika) -> bool:
+def onko_elokuva(elokuva, kellonaika, sali) -> bool:
     with open("elokuvat.json","r") as tiedosto:
         ohjelmalista = json.load(tiedosto)
         i = 0
         while i < len(ohjelmalista["elokuvat"]):
-            if elokuva == ohjelmalista["elokuvat"][i]["elokuva"] and kellonaika == ohjelmalista["elokuvat"][i]["kellonaika"]:
+            if elokuva == ohjelmalista["elokuvat"][i]["elokuva"] and kellonaika == ohjelmalista["elokuvat"][i]["kellonaika"] and sali == ohjelmalista["elokuvat"][i]["sali"]:
                 i += 1
                 return True
             else:
                 i += 1
                     
-def poista_elokuva(elokuva:str, kellonaika:str, sali:int):
+def poista_elokuva(ohjelmalista: dict, elokuva:str, kellonaika:str, sali:int):
     with open("elokuvat.json","r+") as tiedosto:
         ohjelmalista = json.load(tiedosto)
         i = 0
@@ -50,10 +50,6 @@ def tulosta_ohjelmalista():
                 print(naytos)
         else:
             print("Ohjelmalista on tyhjä.")
-
-def varaus_tietokantaan(elokuva:str, sali:int, paikka:int):
-    with open("tietokanta.txt","a") as tk:
-        tk.write(f"Varattu liput elokuvaan {elokuva} salissa {sali} istumapaikalta {paikka}" "\n")
 
 def varaukset():
     with open("elokuvat.json","r") as tiedosto:
@@ -79,8 +75,7 @@ def tulosta_admin_valikko(): #Tulostaa ylläpitäjän valikon
     print("Valitse:")
     print("1: Lisää elokuva ohjelmistoon")
     print("2: Poista elokuva ohjelmistosta")
-    print("3: Listaa ohjelmisto")
-    print("4: Selaa varauksia")
+    print("3: Listaa ohjelmisto ja selaa varauksia")
     print("0: Poistu")
     print("----------------------------------------")
 
@@ -122,29 +117,38 @@ while valinta != 0:
                 if valinta == 1:
                     elokuva = input("Elokuvan nimi: ")
                     kellonaika = input("Lisää kellonaika: ")
+                    
                     while True:
-                        sali = int(input("Salin numero ( 1, 2 tai 3): "))
-                        if sali == 1 or sali == 2 or sali == 3:
-                            break
-                        if sali != 1 or sali != 2 or sali != 3:
-                            print("Saleja on vain 1, 2 ja 3. Valitse uudelleen!")
+                        try:
+                            sali = int(input("Salin numero ( 1, 2 tai 3): "))
+                            if sali == 1 or sali == 2 or sali == 3:
+                                break
+                            if sali != 1 or sali != 2 or sali != 3:
+                                print("Saleja on vain 1, 2 ja 3. Valitse uudelleen!")
+                        except ValueError:
+                            print("Salin numero pitää olla 1, 2 tai 3.")
                             
                     tallenna_elokuva(ohjelmalista, elokuva, kellonaika, sali)
                 
                 elif valinta == 2:
                     elokuva = input("Anna elokuvan nimi: ")
                     kellonaika = input("Anna kellonaika: ")
-                    sali = int(input("Anna salin numero: "))
-                    poista_elokuva(elokuva, kellonaika, sali)
+                    while True:
+                        try:
+                            sali = int(input("Valitse sali: "))
+                            if sali == 1 or 2 or 3:
+                                break
+                            if sali != 1 or 2 or 3:
+                                print("Saleja on vain 1, 2 ja 3. Valitse uudelleen!")
+                                
+                        except ValueError:
+                            print("Salin numero pitää olla 1, 2 tai 3.")
+
+                    poista_elokuva(ohjelmalista, elokuva, kellonaika, sali)
                     print(f"Elokuva {elokuva} kello {kellonaika} salista {sali} poistettu.")
                 
                 elif valinta == 3:
                     tulosta_ohjelmalista()
-                
-                elif valinta == 4:
-                    with open("tietokanta.txt","r") as tk:
-                        sisalto = tk.read()
-                        print(sisalto)
 
                 tulosta_admin_valikko()
                 
@@ -178,27 +182,28 @@ while valinta != 0:
                 while True:
                     elokuva = input("Valitse elokuva: ")
                     kellonaika = input("Anna kellonaika: ")
-                    if onko_elokuva(elokuva, kellonaika):
+                    while True:
+                        try:
+                            sali = int(input("Valitse sali: "))
+                            if sali == 1 or 2 or 3:
+                                break
+                            if sali != 1 or 2 or 3:
+                                print("Saleja on vain 1, 2 ja 3. Valitse uudelleen!")
+                                
+                        except ValueError:
+                            print("Salin numero pitää olla 1, 2 tai 3.")
+
+                    if onko_elokuva(elokuva, kellonaika, sali):
                         break
                     else:
-                        print("Näytöstä ei ole tähän aikaan.")
+                        print("Näytöstä ei ole tähän aikaan tässä salissa.")
+
                 with open("elokuvat.json","r") as tiedosto:
                     ohjelmalista = json.load(tiedosto)
                     for naytos in ohjelmalista["elokuvat"]:
                         if naytos["elokuva"] == elokuva and naytos["kellonaika"] == kellonaika:
                             valittu = naytos
                                     
-                while True:
-                    try:
-                        sali = int(input("Valitse sali: "))
-                        if sali == 1 or 2 or 3:
-                            break
-                        if sali != 1 or 2 or 3:
-                            print("Saleja on vain 1, 2 ja 3. Valitse uudelleen!")
-                            
-                    except ValueError:
-                        print("Salin numero pitää olla 1, 2 tai 3.")
- 
                 if sali == 1:
                     print("___________________")
                     print("|13|14|15|16|17|18|")
@@ -226,7 +231,6 @@ while valinta != 0:
                         valittu["varauslista"].append(paikka)
                         with open("elokuvat.json","w") as tiedosto:
                             json.dump(ohjelmalista, tiedosto, indent=4)
-                        varaus_tietokantaan(elokuva, sali, paikka)
                
                 elif sali == 2:
                     print("_______________________________")
@@ -256,7 +260,6 @@ while valinta != 0:
                         valittu["varauslista"].append(paikka)
                         with open("elokuvat.json","w") as tiedosto:
                             json.dump(ohjelmalista, tiedosto, indent=4)
-                        varaus_tietokantaan(elokuva, sali, paikka)
 
                 elif sali == 3:
                     print("_________________________")
@@ -286,7 +289,6 @@ while valinta != 0:
                         valittu["varauslista"].append(paikka)
                         with open("elokuvat.json","w") as tiedosto:
                             json.dump(ohjelmalista, tiedosto, indent=4)
-                        varaus_tietokantaan(elokuva, sali, paikka)  
             tulosta_asiakasvalikko()
 
             while True:
